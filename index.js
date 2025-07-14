@@ -36,13 +36,13 @@ app.get("/weather", async (req, res) => {
 });
 
 
-app.get("/views", async (req, res) => {
-  let viewCount = 0;
-  app.get("/views", (req, res) => {
+let viewCount = 0;
+
+app.get("/views", (req, res) => {
   viewCount++;
   res.json({ count: viewCount });
-  });
 });
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Server running on", PORT));
