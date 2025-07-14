@@ -37,9 +37,11 @@ app.get("/weather", async (req, res) => {
 
 
 app.get("/views", async (req, res) => {
-  const url = `https://api.countapi.xyz/hit/${process.env.COUNT_NAMESPACE}/${process.env.COUNT_KEY}`;
-  const d = await fetch(url).then(r => r.json());
-  res.json({ count: d.value });
+  let viewCount = 0;
+  app.get("/views", (req, res) => {
+  viewCount++;
+  res.json({ count: viewCount });
+  });
 });
 
 const PORT = process.env.PORT || 3000;
