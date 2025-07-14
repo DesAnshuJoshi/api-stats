@@ -13,7 +13,10 @@ app.get("/emoji", (req, res) => {
 });
 
 app.get("/location", async (req, res) => {
-  const data = await fetch(`https://ipinfo.io/json?token=${process.env.IPINFO_TOKEN}`).then(r => r.json());
+  //const data = await fetch(`https://ipinfo.io/json?token=${process.env.IPINFO_TOKEN}`).then(r => r.json());
+  const ip = req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress;
+  const data = await fetch(`https://ipinfo.io/${ip}?token=${process.env.IPINFO_TOKEN}`).then(r => r.json());
+
   res.json({ city: data.city, country: data.country });
 });
 
