@@ -21,11 +21,20 @@ app.get("/location", async (req, res) => {
 });
 
 app.get("/weather", async (req, res) => {
-  const ip = await fetch(`https://ipinfo.io/json?token=${process.env.IPINFO_TOKEN}`).then(r => r.json());
-  const [lat, lon] = ip.loc.split(",");
-  const w = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHER_API_KEY}&units=metric`).then(r => r.json());
-  res.json({ temp: `${Math.round(w.main.temp)}°C`, condition: w.weather[0].main });
+  const ip = req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress;
+  const ipData = await fetch(`https://ipinfo.io/${ip}?token=${process.env.IPINFO_TOKEN}`).then(r => r.json());
+
+  const [lat, lon] = ipData.loc.split(",");
+  const weather = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHER_API_KEY}&units=metric`
+  ).then(r => r.json());
+
+  res.json({
+    temp: `${Math.round(weather.main.temp)}°C`,
+    condition: weather.weather[0].main
+  });
 });
+
 
 app.get("/views", async (req, res) => {
   const url = `https://api.countapi.xyz/hit/${process.env.COUNT_NAMESPACE}/${process.env.COUNT_KEY}`;
