@@ -1,6 +1,5 @@
-// package.json
 {
-  "name": "framer-api",
+  "name": "api-stats",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
